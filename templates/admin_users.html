@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Users - Warehouse Management System</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .sidebar {
+            background-color: #212529;
+            color: #fff;
+            min-height: 100vh;
+            padding-top: 20px;
+        }
+        .sidebar .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            padding: 10px 20px;
+            margin: 5px 0;
+            border-radius: 5px;
+        }
+        .sidebar .nav-link:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+        .sidebar .nav-link.active {
+            background-color: #0d6efd;
+            color: #fff;
+        }
+        .sidebar .nav-link i {
+            margin-right: 10px;
+        }
+        .content {
+            padding: 20px;
+        }
+        .users-card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+        .btn-primary {
+            background-color: #0d6efd;
+            border: none;
+        }
+        .btn-primary:hover {
+            background-color: #0b5ed7;
+        }
+        .alert {
+            margin-bottom: 20px;
+        }
+        .role-badge {
+            font-size: 0.8rem;
+            padding: 0.25rem 0.5rem;
+        }
+        .search-box {
+            max-width: 300px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3 col-lg-2 sidebar">
+                <h3 class="text-center mb-4">Warehouse MS</h3>
+                <div class="d-flex flex-column">
+                    <a href="{{ url_for('dashboard') }}" class="nav-link">
+                        <i class="fas fa-tachometer-alt"></i> Dashboard
+                    </a>
+                    <a href="{{ url_for('profile') }}" class="nav-link">
+                        <i class="fas fa-user"></i> My Profile
+                    </a>
+                    <a href="{{ url_for('request_slot') }}" class="nav-link">
+                        <i class="fas fa-plus"></i> Request Slot
+                    </a>
+                    <a href="{{ url_for('my_requests') }}" class="nav-link">
+                        <i class="fas fa-list"></i> My Requests
+                    </a>
+                    <hr class="my-3 bg-light">
+                    <h6 class="text-muted px-3 mb-2">Admin</h6>
+                    <a href="{{ url_for('admin_slots') }}" class="nav-link">
+                        <i class="fas fa-box"></i> Manage Slots
+                    </a>
+                    <a href="{{ url_for('admin_requests') }}" class="nav-link">
+                        <i class="fas fa-clipboard-list"></i> Manage Requests
+                    </a>
+                    <a href="{{ url_for('admin_users') }}" class="nav-link active">
+                        <i class="fas fa-users"></i> Manage Users
+                    </a>
+                    <hr class="my-3 bg-light">
+                    <a href="{{ url_for('logout') }}" class="nav-link text-danger">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Main Content -->
+            <div class="col-md-9 col-lg-10 content">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2>Manage Users</h2>
+                    <div class="search-box">
+                        <input type="text" class="form-control" id="userSearch" placeholder="Search users...">
+                    </div>
+                </div>
+                
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category if category != 'error' else 'danger' }}">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+                
+                <div class="users-card">
+                    <div class="table-responsive">
+                        <table class="table table-hover" id="usersTable">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Username</th>
+                                    <th>Email</th>
+                                    <th>Role</th>
+                                    <th>Created At</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for user in users %}
+                                    <tr>
+                                        <td>{{ user.id }}</td>
+                                        <td>{{ user.username }}</td>
+                                        <td>{{ user.email }}</td>
+                                        <td>
+                                            {% if user.role == 'admin' %}
+                                                <span class="badge bg-danger role-badge">Admin</span>
+                                            {% else %}
+                                                <span class="badge bg-info role-badge">User</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ user.created_at.strftime('%Y-%m-%d') if user.created_at else 'N/A' }}</td>
+                                        <td>
+                                            {% if user.id != session.user_id %}
+                                                <form method="POST" action="{{ url_for('toggle_user_role', user_id=user.id) }}" style="display: inline;">
+                                                    <button type="submit" class="btn btn-sm btn-outline-primary">
+                                                        {% if user.role == 'admin' %}
+                                                            Make User
+                                                        {% else %}
+                                                            Make Admin
+                                                        {% endif %}
+                                                    </button>
+                                                </form>
+                                            {% else %}
+                                                <span class="text-muted">Current User</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    {% if not users %}
+                        <div class="text-center py-4">
+                            <p class="text-muted">No users found.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Simple search functionality
+        document.getElementById('userSearch').addEventListener('keyup', function() {
+            const searchValue = this.value.toLowerCase();
+            const table = document.getElementById('usersTable');
+            const rows = table.getElementsByTagName('tr');
+            
+            for (let i = 1; i < rows.length; i++) {
+                const username = rows[i].getElementsByTagName('td')[1].textContent.toLowerCase();
+                const email = rows[i].getElementsByTagName('td')[2].textContent.toLowerCase();
+                
+                if (username.includes(searchValue) || email.includes(searchValue)) {
+                    rows[i].style.display = '';
+                } else {
+                    rows[i].style.display = 'none';
+                }
+            }
+        });
+    </script>
+</body>
+</html> 

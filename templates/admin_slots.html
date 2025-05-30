@@ -1,0 +1,295 @@
+{% extends 'base.html' %}
+
+{% block title %}Manage Slots - Warehouse Management System{% endblock %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Slots - Warehouse Management System</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .sidebar {
+            background-color: #212529;
+            color: #fff;
+            min-height: 100vh;
+            padding-top: 20px;
+        }
+        .sidebar .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            padding: 10px 20px;
+            margin: 5px 0;
+            border-radius: 5px;
+        }
+        .sidebar .nav-link:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+        .sidebar .nav-link.active {
+            background-color: #0d6efd;
+            color: #fff;
+        }
+        .sidebar .nav-link i {
+            margin-right: 10px;
+        }
+        .content {
+            padding: 20px;
+        }
+        .slots-card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+        .btn-primary {
+            background-color: #0d6efd;
+            border: none;
+        }
+        .btn-primary:hover {
+            background-color: #0b5ed7;
+        }
+        .alert {
+            margin-bottom: 20px;
+        }
+        .status-badge {
+            font-size: 0.8rem;
+            padding: 0.25rem 0.5rem;
+        }
+        .capacity-controls {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 5px;
+        }
+        .capacity-controls .btn {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.8rem;
+            height: 28px;
+            width: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .capacity-input {
+            width: 60px;
+            margin: 0 5px;
+            text-align: center;
+            height: 28px;
+            padding: 0.25rem;
+        }
+        .action-buttons {
+            display: flex;
+            gap: 5px;
+        }
+        .delete-btn {
+            color: #dc3545;
+            cursor: pointer;
+        }
+        .delete-btn:hover {
+            color: #b02a37;
+        }
+        .table > :not(caption) > * > * {
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3 col-lg-2 sidebar">
+                <h3 class="text-center mb-4">Warehouse MS</h3>
+                <div class="d-flex flex-column">
+                    <a href="{{ url_for('dashboard') }}" class="nav-link">
+                        <i class="fas fa-tachometer-alt"></i> Dashboard
+                    </a>
+                    <a href="{{ url_for('profile') }}" class="nav-link">
+                        <i class="fas fa-user"></i> My Profile
+                    </a>
+                    <a href="{{ url_for('request_slot') }}" class="nav-link">
+                        <i class="fas fa-plus"></i> Request Slot
+                    </a>
+                    <a href="{{ url_for('my_requests') }}" class="nav-link">
+                        <i class="fas fa-list"></i> My Requests
+                    </a>
+                    <hr class="my-3 bg-light">
+                    <h6 class="text-muted px-3 mb-2">Admin</h6>
+                    <a href="{{ url_for('admin_slots') }}" class="nav-link active">
+                        <i class="fas fa-box"></i> Manage Slots
+                    </a>
+                    <a href="{{ url_for('admin_requests') }}" class="nav-link">
+                        <i class="fas fa-clipboard-list"></i> Manage Requests
+                    </a>
+                    <a href="{{ url_for('admin_users') }}" class="nav-link">
+                        <i class="fas fa-users"></i> Manage Users
+                    </a>
+                    <hr class="my-3 bg-light">
+                    <a href="{{ url_for('logout') }}" class="nav-link text-danger">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Main Content -->
+            <div class="col-md-9 col-lg-10 content">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2>Manage Warehouse Slots</h2>
+                    <a href="{{ url_for('add_slot') }}" class="btn btn-primary">
+                        <i class="fas fa-plus me-2"></i>Add New Slot
+                    </a>
+                </div>
+                
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category if category != 'error' else 'danger' }}">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+                
+                <div class="slots-card">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Slot Name</th>
+                                    <th>Location</th>
+                                    <th>Capacity</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for slot in slots %}
+                                    <tr>
+                                        <td>{{ slot.id }}</td>
+                                        <td>{{ slot.slot_name }}</td>
+                                        <td>{{ slot.location }}</td>
+                                        <td>
+                                            <div class="capacity-controls">
+                                                <form method="POST" action="{{ url_for('decrease_capacity', slot_id=slot.id) }}" style="display: inline;">
+                                                    <input type="hidden" name="amount" value="1">
+                                                    <button type="submit" class="btn btn-outline-secondary btn-sm" title="Decrease capacity">
+                                                        <i class="fas fa-minus"></i>
+                                                    </button>
+                                                </form>
+                                                
+                                                <form method="POST" action="{{ url_for('update_capacity', slot_id=slot.id) }}" style="display: inline;">
+                                                    <input type="number" class="form-control form-control-sm capacity-input" name="capacity" value="{{ slot.capacity }}" min="1">
+                                                </form>
+                                                
+                                                <form method="POST" action="{{ url_for('increase_capacity', slot_id=slot.id) }}" style="display: inline;">
+                                                    <input type="hidden" name="amount" value="1">
+                                                    <button type="submit" class="btn btn-outline-secondary btn-sm" title="Increase capacity">
+                                                        <i class="fas fa-plus"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            {% if slot.status == 'available' %}
+                                                <span class="badge bg-success status-badge">Available</span>
+                                            {% elif slot.status == 'occupied' %}
+                                                <span class="badge bg-danger status-badge">Occupied</span>
+                                            {% elif slot.status == 'maintenance' %}
+                                                <span class="badge bg-warning status-badge">Maintenance</span>
+                                            {% else %}
+                                                <span class="badge bg-secondary status-badge">{{ slot.status }}</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <div class="action-buttons">
+                                                <div class="dropdown">
+                                                    <button class="btn btn-sm btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                        Status
+                                                    </button>
+                                                    <ul class="dropdown-menu">
+                                                        <li>
+                                                            <form method="POST" action="{{ url_for('update_slot', slot_id=slot.id) }}">
+                                                                <input type="hidden" name="is_full" value="false">
+                                                                <input type="hidden" name="status" value="available">
+                                                                <button type="submit" class="dropdown-item">Mark Available</button>
+                                                            </form>
+                                                        </li>
+                                                        <li>
+                                                            <form method="POST" action="{{ url_for('update_slot', slot_id=slot.id) }}">
+                                                                <input type="hidden" name="is_full" value="true">
+                                                                <input type="hidden" name="status" value="occupied">
+                                                                <button type="submit" class="dropdown-item">Mark Occupied</button>
+                                                            </form>
+                                                        </li>
+                                                        <li>
+                                                            <form method="POST" action="{{ url_for('update_slot', slot_id=slot.id) }}">
+                                                                <input type="hidden" name="is_full" value="true">
+                                                                <input type="hidden" name="status" value="maintenance">
+                                                                <button type="submit" class="dropdown-item">Mark Maintenance</button>
+                                                            </form>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                                
+                                                <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ slot.id }}">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                                
+                                                <!-- Delete Modal -->
+                                                <div class="modal fade" id="deleteModal{{ slot.id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ slot.id }}" aria-hidden="true">
+                                                    <div class="modal-dialog">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title" id="deleteModalLabel{{ slot.id }}">Confirm Delete</h5>
+                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                Are you sure you want to delete slot <strong>{{ slot.slot_name }}</strong>? This action cannot be undone.
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                                <form method="POST" action="{{ url_for('delete_slot', slot_id=slot.id) }}">
+                                                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    {% if not slots %}
+                        <div class="text-center py-4">
+                            <p class="text-muted">No slots found.</p>
+                            <a href="{{ url_for('add_slot') }}" class="btn btn-primary">Add Slot</a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Auto-submit capacity form when input loses focus
+        document.querySelectorAll('.capacity-input').forEach(input => {
+            input.addEventListener('change', function() {
+                this.form.submit();
+            });
+        });
+    </script>
+</body>
+</html>
+{% endblock %} 

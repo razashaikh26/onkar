@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %}Add Slot - Warehouse Management System{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-6">
+        <div class="card shadow-lg border-0 rounded-lg mt-5">
+            <div class="card-header bg-primary text-white">
+                <h3 class="text-center font-weight-light my-2">Add New Warehouse Slot</h3>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('add_slot') }}">
+                    <div class="mb-3">
+                        <label for="slot_name" class="form-label">Slot Name</label>
+                        <input type="text" class="form-control" id="slot_name" name="slot_name" required>
+                        <div class="form-text">Enter a unique identifier for this slot (e.g., A1, B2, etc.)</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="location" class="form-label">Location</label>
+                        <input type="text" class="form-control" id="location" name="location" required>
+                        <div class="form-text">Enter the physical location of this slot (e.g., Section A, Floor 1)</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="capacity" class="form-label">Capacity</label>
+                        <div class="input-group">
+                            <input type="number" class="form-control" id="capacity" name="capacity" min="1" required>
+                            <span class="input-group-text">units</span>
+                        </div>
+                        <div class="form-text">Enter the maximum capacity of this slot</div>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">Add Slot</button>
+                        <a href="{{ url_for('admin_slots') }}" class="btn btn-outline-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

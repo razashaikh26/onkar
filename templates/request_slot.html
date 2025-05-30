@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block title %}Request Slot - Warehouse Management System{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card shadow-lg border-0 rounded-lg mt-5">
+            <div class="card-header bg-primary text-white">
+                <h3 class="text-center font-weight-light my-2">Request Warehouse Slot</h3>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('request_slot') }}">
+                    <div class="mb-3">
+                        <label for="slot_id" class="form-label">Select Slot</label>
+                        <select class="form-select" id="slot_id" name="slot_id" required>
+                            <option value="" selected disabled>Choose a slot...</option>
+                            {% for slot in available_slots %}
+                                <option value="{{ slot.id }}" {% if request.args.get('slot_id')|int == slot.id %}selected{% endif %}>
+                                    {{ slot.slot_name }} - {{ slot.location }} (Capacity: {{ slot.capacity }})
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="start_date" class="form-label">Start Date</label>
+                            <input type="date" class="form-control" id="start_date" name="start_date" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="end_date" class="form-label">End Date</label>
+                            <input type="date" class="form-control" id="end_date" name="end_date" required>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="notes" class="form-label">Additional Notes</label>
+                        <textarea class="form-control" id="notes" name="notes" rows="3" placeholder="Enter any additional information about your request..."></textarea>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">Submit Request</button>
+                        <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Set minimum date to today
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('start_date').setAttribute('min', today);
+        document.getElementById('end_date').setAttribute('min', today);
+        
+        // Ensure end date is not before start date
+        document.getElementById('start_date').addEventListener('change', function() {
+            document.getElementById('end_date').setAttribute('min', this.value);
+        });
+    });
+</script>
+{% endblock %} 
